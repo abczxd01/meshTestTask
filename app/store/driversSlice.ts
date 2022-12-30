@@ -31,6 +31,7 @@ const slice = createSlice({
           ...action.payload.MRData.DriverTable.Drivers,
         ];
       }
+      state.error = null;
       state.loading = false;
     });
     builder.addCase(fetchDrivers.rejected, (state, action) => {

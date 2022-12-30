@@ -10,7 +10,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 import {StackParamList} from './types';
-import {Drivers, Driver, Races} from './screens';
+import {Drivers, Driver, Races} from '../screens';
 
 const Stack = createNativeStackNavigator<StackParamList>();
 

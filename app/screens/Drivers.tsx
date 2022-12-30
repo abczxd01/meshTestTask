@@ -1,13 +1,17 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-import {Driver, DriversProps} from '../types';
+import {Driver} from '../types';
+import {DriversProps} from '../navigation/types';
 import {fetchDrivers} from '../services/api';
 import {useAppDispatch, useAppSelector} from '../store/index';
 
 export const Drivers: React.FC<DriversProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
   const drivers = useAppSelector(state => state.drivers.drivers);
+  const error = useAppSelector(state => state.drivers.error);
+
+  const [offsetNumber, setOffsetNumber] = useState(0);
 
   useEffect(() => {
     dispatch(fetchDrivers());
@@ -19,6 +23,13 @@ export const Drivers: React.FC<DriversProps> = ({navigation}) => {
 
   const navigateToRaces = (driverId: string) => {
     navigation.navigate('Races', driverId);
+  };
+
+  const onEndReached = () => {
+    if (offsetNumber < 110) {
+      setOffsetNumber(offsetNumber + 10);
+      dispatch(fetchDrivers(offsetNumber));
+    }
   };
 
   const renderItem = ({item}: {item: Driver}) => (
@@ -37,7 +48,19 @@ export const Drivers: React.FC<DriversProps> = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <FlatList data={drivers} renderItem={renderItem} />
+      {error ? (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorMessage}>{'Something went wrong :('}</Text>
+          <Text style={styles.errorMessage}>{'Try later'}</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={drivers}
+          renderItem={renderItem}
+          onEndReachedThreshold={0.3}
+          onEndReached={onEndReached}
+        />
+      )}
     </View>
   );
 };
@@ -62,8 +85,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    marginBottom: 10,
-    // borderBottomWidth: 1,
-    // borderBottomColor: '#ffac30',
+    marginBottom: 20,
+  },
+  errorMessage: {
+    fontSize: 22,
+    fontWeight: '500',
+    color: '#000',
+  },
+  errorContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

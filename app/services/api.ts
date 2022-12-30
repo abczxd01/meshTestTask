@@ -17,13 +17,14 @@ export const fetchRaces = createAsyncThunk(
   'races/fetchRaces',
   async ({
     driverName,
-    offsetNumber,
+    offsetNumber = 0,
   }: {
     driverName: string;
     offsetNumber: number;
   }) => {
     const response = await axios.get(
-      baseUrl + `/drivers/${driverName}/results.json&offset=${offsetNumber}`,
+      baseUrl +
+        `/drivers/${driverName}/results.json?limit=3&offset=${offsetNumber}`,
     );
     return response?.data as RacesMRData;
   },

@@ -35,6 +35,7 @@ const slice = createSlice({
           ...action.payload.MRData.RaceTable.Races,
         ];
       }
+      state.error = null;
       state.loading = false;
     });
     builder.addCase(fetchRaces.rejected, (state, action) => {
